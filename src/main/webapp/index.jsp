@@ -5,7 +5,7 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
-<h1><%= "Github WebHook!" %>
+<h1><%= "NONNON!" %>
 </h1>
 <br/>
 <a href="hello-servlet">Hello Servlet</a>
