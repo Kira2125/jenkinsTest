@@ -2,6 +2,8 @@ package com.example.demo.dao;
 
 import com.example.demo.model.User;
 
+import javax.sql.ConnectionPoolDataSource;
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ public class UserDAO {
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
+
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
