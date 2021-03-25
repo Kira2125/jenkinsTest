@@ -20,15 +20,18 @@ public class UserDAO {
     private static final String SELECT_ALL_USERS = "select * from users";
     private static final String DELETE_USERS_SQL = "delete from users where id = ?;";
     private static final String UPDATE_USERS_SQL = "update users set name = ?,email= ?, country =? where id = ?;";
+    private static final String SELECT_ALL_USERS_ORDERED_BY_NAME = "select * from users order by name";
 
     public UserDAO() {
     }
 
     public Connection getConnection() {
         Connection connection = null;
+        ConnectionPoolDataSource connectionPoolDataSource;
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -124,6 +127,29 @@ public class UserDAO {
         return rowUpdated;
     }
 
+    public List<User> getOrderUsersByName() {
+        List<User> orderedUsers = new ArrayList();
+
+        try (Connection connection = getConnection();
+
+             Statement statement = connection.createStatement()) {
+
+
+            ResultSet rs = statement.executeQuery(SELECT_ALL_USERS_ORDERED_BY_NAME);
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String country = rs.getString("country");
+                orderedUsers.add(new User(id, name, email, country));
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+        return orderedUsers;
+    }
+
     private void printSQLException(SQLException ex) {
         for (Throwable e : ex) {
             if (e instanceof SQLException) {
@@ -139,5 +165,6 @@ public class UserDAO {
             }
         }
     }
+
 
 }

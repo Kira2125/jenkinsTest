@@ -31,15 +31,15 @@
 <br>
 
 <div class="row">
-    <!-- <div class="alert alert-success" *ngIf='message'>{{message}}</div> -->
+
 
     <div class="container">
         <h3 class="text-center">dds</h3>
         <hr>
         <div class="container text-left">
 
-            <a href="<%=request.getContextPath()%>/new" class="btn btn-success">Add
-                New User</a>
+            <a href="<%=request.getContextPath()%>/new" class="btn btn-success">Add New User</a>
+            <a href="<%=request.getContextPath()%>/order-by-name" class="btn btn-info">Order by name</a>
         </div>
         <br>
         <table class="table table-bordered">
@@ -53,7 +53,7 @@
             </tr>
             </thead>
             <tbody>
-            <!--   for (Todo todo: todos) {  -->
+
             <c:forEach var="user" items="${listUser}">
 
                 <tr>
@@ -66,7 +66,7 @@
                                 href="delete?id=<c:out value='${user.id}' />">Delete</a></td>
                 </tr>
             </c:forEach>
-            <!-- } -->
+
             </tbody>
 
         </table>

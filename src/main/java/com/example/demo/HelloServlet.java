@@ -46,6 +46,8 @@ public class HelloServlet extends HttpServlet {
                 case "/update":
                     updateUser(request, response);
                     break;
+                case "/order-by-name":
+                    orderUsersByName(request, response);
                 default:
                     listUser(request, response);
                     break;
@@ -96,8 +98,8 @@ public class HelloServlet extends HttpServlet {
         String email = request.getParameter("email");
         String country = request.getParameter("country");
 
-        User book = new User(id, name, email, country);
-        userDAO.updateUser(book);
+        User usr = new User(id, name, email, country);
+        userDAO.updateUser(usr);
         response.sendRedirect("list");
     }
 
@@ -107,5 +109,13 @@ public class HelloServlet extends HttpServlet {
         userDAO.deleteUser(id);
         response.sendRedirect("list");
 
+    }
+
+    private void orderUsersByName(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<User> userList = userDAO.getOrderUsersByName();
+        request.setAttribute("listUser", userList);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+        dispatcher.forward(request, response);
     }
 }
