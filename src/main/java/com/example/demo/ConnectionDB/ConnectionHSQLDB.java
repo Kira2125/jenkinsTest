@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionHSQLDB implements ConnectionInt {
-    private final static String jdbcURL = "jdbc:hsqldb:hsql://localhost/Test";
+    private final static String jdbcURL = "jdbc:hsqldb:hsql://192.168.0.105/Test";
     private final static String jdbcUsername = "SA";
     private final static String jdbcPassword = "";
 
