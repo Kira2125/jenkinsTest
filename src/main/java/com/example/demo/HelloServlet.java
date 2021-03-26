@@ -13,7 +13,6 @@ import javax.servlet.annotation.*;
 
 @WebServlet(value = "/")
 public class HelloServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
     private UserDAO userDAO;
 
     public void init() {
