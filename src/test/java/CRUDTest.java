@@ -70,7 +70,6 @@ public class CRUDTest {
     @Test
     public void testDeleteUser() throws SQLException {
 
-
         userDAO.deleteUser(0);
         assertEquals(4, userDAO.selectAllUsers().size());
     }

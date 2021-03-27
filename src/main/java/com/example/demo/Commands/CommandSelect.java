@@ -3,25 +3,26 @@ package com.example.demo.Commands;
 import com.example.demo.dao.UserDAO;
 import com.example.demo.model.User;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 public class CommandSelect implements CommandDB {
     private UserDAO userDAO;
-    private User user;
-    private int parameter;
 
     public CommandSelect(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
     @Override
-    public void execute() {
-       user = userDAO.selectUser(parameter);
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        User existingUser = userDAO.selectUser(id);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("user-form.jsp");
+        request.setAttribute("user", existingUser);
+        dispatcher.forward(request, response);
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setParameter(int parameter) {
-        this.parameter = parameter;
-    }
 }

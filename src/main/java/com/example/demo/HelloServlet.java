@@ -15,12 +15,12 @@ import javax.servlet.annotation.*;
 @WebServlet(value = "/")
 public class HelloServlet extends HttpServlet {
     private UserDAO userDAO;
-    private CommandUpdate commandUpdate;
-    private CommandSelect commandSelect;
-    private CommandDelete commandDelete;
-    private CommandInsert commandInsert;
-    private CommandSelectAll commandSelectAll;
-    private CommandSelectAllByName commandSelectAllByName;
+    private CommandDB commandUpdate;
+    private CommandDB commandSelect;
+    private CommandDB commandDelete;
+    private CommandDB commandInsert;
+    private CommandDB commandSelectAll;
+    private CommandDB commandSelectAllByName;
 
     public void init() {
         userDAO = new UserDAO();
@@ -66,11 +66,8 @@ public class HelloServlet extends HttpServlet {
     private void listUser(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
         commandSelectAll = new CommandSelectAll(userDAO);
-        commandSelectAll.execute();
-        List<User> listUser = commandSelectAll.getUsers();
-        request.setAttribute("listUser", listUser);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
-        dispatcher.forward(request, response);
+        commandSelectAll.execute(request, response);
+
     }
 
     private void showNewForm(HttpServletRequest request, HttpServletResponse response)
@@ -81,60 +78,39 @@ public class HelloServlet extends HttpServlet {
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        commandSelect = new CommandSelect(userDAO);
-        commandSelect.setParameter(id);
-        commandSelect.execute();
-        User existingUser = commandSelect.getUser();
-        RequestDispatcher dispatcher = request.getRequestDispatcher("user-form.jsp");
-        request.setAttribute("user", existingUser);
-        dispatcher.forward(request, response);
 
+        commandSelect = new CommandSelect(userDAO);
+        commandSelect.execute(request, response);
     }
 
     private void insertUser(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
-        String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String country = request.getParameter("country");
-        User newUser = new User(name, email, country);
+            throws SQLException, IOException, ServletException {
+
         commandInsert = new CommandInsert(userDAO);
-        commandInsert.setParameter(newUser);
-        commandInsert.execute();
-        response.sendRedirect("list");
+        commandInsert.execute(request, response);
+
     }
 
     private void updateUser(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        String country = request.getParameter("country");
+            throws SQLException, IOException, ServletException {
 
-        User user = new User(id, name, email, country);
         commandUpdate = new CommandUpdate(userDAO);
-        commandUpdate.setParameter(user);
-        commandUpdate.execute();
-        response.sendRedirect("list");
+        commandUpdate.execute(request, response);
+
     }
 
     private void deleteUser(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
+            throws SQLException, IOException, ServletException {
+
         commandDelete = new CommandDelete(userDAO);
-        commandDelete.setParameter(id);
-        commandDelete.execute();
-        response.sendRedirect("list");
+        commandDelete.execute(request, response);
 
     }
 
     private void listUserByName(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, SQLException {
         commandSelectAllByName = new CommandSelectAllByName(userDAO);
-        commandSelectAllByName.execute();
-        List<User> listUser = commandSelectAllByName.getUsers();
-        request.setAttribute("listUser", listUser);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
-        dispatcher.forward(request, response);
+        commandSelectAllByName.execute(request, response);
+
     }
 }
