@@ -40,6 +40,7 @@
 
             <a href="<%=request.getContextPath()%>/new" class="btn btn-success">Add
                 New User</a>
+            <a href="<%=request.getContextPath()%>/order-name" class="btn btn-info">Order by name</a>
         </div>
         <br>
         <table class="table table-bordered">

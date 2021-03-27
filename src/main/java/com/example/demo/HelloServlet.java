@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.Commands.*;
 import com.example.demo.dao.UserDAO;
 import com.example.demo.model.User;
 
@@ -14,6 +15,12 @@ import javax.servlet.annotation.*;
 @WebServlet(value = "/")
 public class HelloServlet extends HttpServlet {
     private UserDAO userDAO;
+    private CommandUpdate commandUpdate;
+    private CommandSelect commandSelect;
+    private CommandDelete commandDelete;
+    private CommandInsert commandInsert;
+    private CommandSelectAll commandSelectAll;
+    private CommandSelectAllByName commandSelectAllByName;
 
     public void init() {
         userDAO = new UserDAO();
@@ -45,6 +52,8 @@ public class HelloServlet extends HttpServlet {
                 case "/update":
                     updateUser(request, response);
                     break;
+                case "/order-name":
+                    listUserByName(request, response);
                 default:
                     listUser(request, response);
                     break;
@@ -56,7 +65,9 @@ public class HelloServlet extends HttpServlet {
 
     private void listUser(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-        List<User> listUser = userDAO.selectAllUsers();
+        commandSelectAll = new CommandSelectAll(userDAO);
+        commandSelectAll.execute();
+        List<User> listUser = commandSelectAll.getUsers();
         request.setAttribute("listUser", listUser);
         RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
         dispatcher.forward(request, response);
@@ -71,7 +82,10 @@ public class HelloServlet extends HttpServlet {
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        User existingUser = userDAO.selectUser(id);
+        commandSelect = new CommandSelect(userDAO);
+        commandSelect.setParameter(id);
+        commandSelect.execute();
+        User existingUser = commandSelect.getUser();
         RequestDispatcher dispatcher = request.getRequestDispatcher("user-form.jsp");
         request.setAttribute("user", existingUser);
         dispatcher.forward(request, response);
@@ -84,7 +98,9 @@ public class HelloServlet extends HttpServlet {
         String email = request.getParameter("email");
         String country = request.getParameter("country");
         User newUser = new User(name, email, country);
-        userDAO.insertUser(newUser);
+        commandInsert = new CommandInsert(userDAO);
+        commandInsert.setParameter(newUser);
+        commandInsert.execute();
         response.sendRedirect("list");
     }
 
@@ -95,16 +111,30 @@ public class HelloServlet extends HttpServlet {
         String email = request.getParameter("email");
         String country = request.getParameter("country");
 
-        User book = new User(id, name, email, country);
-        userDAO.updateUser(book);
+        User user = new User(id, name, email, country);
+        commandUpdate = new CommandUpdate(userDAO);
+        commandUpdate.setParameter(user);
+        commandUpdate.execute();
         response.sendRedirect("list");
     }
 
     private void deleteUser(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        userDAO.deleteUser(id);
+        commandDelete = new CommandDelete(userDAO);
+        commandDelete.setParameter(id);
+        commandDelete.execute();
         response.sendRedirect("list");
 
+    }
+
+    private void listUserByName(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        commandSelectAllByName = new CommandSelectAllByName(userDAO);
+        commandSelectAllByName.execute();
+        List<User> listUser = commandSelectAllByName.getUsers();
+        request.setAttribute("listUser", listUser);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
+        dispatcher.forward(request, response);
     }
 }

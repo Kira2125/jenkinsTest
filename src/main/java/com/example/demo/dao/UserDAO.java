@@ -18,6 +18,7 @@ public class UserDAO {
     private static final String SELECT_ALL_USERS = "select * from users";
     private static final String DELETE_USERS_SQL = "delete from users where id = ?;";
     private static final String UPDATE_USERS_SQL = "update users set name = ?,email= ?, country =? where id = ?;";
+    private static final String SELECT_ALL_USER_ORDERED = "select * from users order by name";
     private final static  String createTableSQL = "DROP TABLE IF EXISTS users;\n" +
             "CREATE TABLE users\n" +
             "(\n" +
@@ -139,6 +140,29 @@ public class UserDAO {
             rowUpdated = statement.executeUpdate() > 0;
         }
         return rowUpdated;
+    }
+
+    public List<User> selectAllUsersOrderedByName() {
+        List<User> users = new ArrayList();
+
+        try (Connection connection = connectionDB.getConnection();
+             Statement statement = connection.createStatement()) {
+
+
+            ResultSet rs = statement.executeQuery(SELECT_ALL_USER_ORDERED);
+
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                String country = rs.getString("country");
+                users.add(new User(id, name, email, country));
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+        return users;
     }
 
     private static void printSQLException(SQLException ex) {
