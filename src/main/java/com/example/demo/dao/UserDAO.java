@@ -25,7 +25,15 @@ public class UserDAO {
             "name varchar(255),\n" +
             "email varchar(255),\n" +
             "country varchar(255),\n" +
-            ");";
+            ");\n" +
+            "INSERT INTO users (name, email, country) VALUES ('john', 'john@gmail.com', 'egypt');\n" +
+            "INSERT INTO users (name, email, country) VALUES ('lary', 'lary@gmail.com', 'france');\n" +
+            "INSERT INTO users (name, email, country) VALUES ('show', 'show@gmail.com', 'chine');\n" +
+            "INSERT INTO users (name, email, country) VALUES ('neil', 'neil@gmail.com', 'usa');\n" +
+            "INSERT INTO users (name, email, country) VALUES ('kravc', 'kravc@gmail.com', 'poland');\n";
+
+
+
 
     private ConnectionInt connectionDB;
 
@@ -45,18 +53,18 @@ public class UserDAO {
 
 
     public boolean insertUser(User user) throws SQLException {
-
+        boolean rowInserted = false;
         try (Connection connection = connectionDB.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USERS_SQL)) {
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setString(3, user.getCountry());
             System.out.println(preparedStatement);
-            preparedStatement.executeUpdate();
+            rowInserted = preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
             printSQLException(e);
         }
-        return true;
+        return rowInserted;
     }
 
     public User selectUser(int id) {
